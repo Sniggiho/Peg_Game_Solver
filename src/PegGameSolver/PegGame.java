@@ -119,6 +119,15 @@ public class PegGame {
         return true;
     }
 
+    /**
+     * Checks if a given move is legal
+     * @param move
+     * @return whether or not the move object constitutes a valid move on the current game board
+     */
+    public boolean checkMoveLegality(Move move){
+        return checkMoveLegality(move.getStartX(), move.getStartY(), move.getEndX(), move.getEndY());
+    }
+
     public static void main(String[] args) {
         PegGame pegGame = new PegGame(-1);
         pegGame.printBoard();
