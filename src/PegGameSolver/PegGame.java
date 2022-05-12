@@ -62,7 +62,7 @@ public class PegGame {
     /**
      * Prints out the board in the system out, with 1 for occupied spots and 0 for empty spots
      */
-    private void printBoard(){
+    public void printBoard(){
         String rowAsString = "";
 
         for (int i = 0; i < boardSize; i ++){
@@ -110,7 +110,7 @@ public class PegGame {
 
         //checks that there is a peg to jump:
         int midX = (x2-x1)/2 + x1;
-        int midY = (y2-y1)/2 + y2;
+        int midY = (y2-y1)/2 + y1;
         if (gameBoard[midX][midY] != 1){
             System.out.println("Move failed: no peg to jump");
             return false;
@@ -128,8 +128,47 @@ public class PegGame {
         return checkMoveLegality(move.getStartX(), move.getStartY(), move.getEndX(), move.getEndY());
     }
 
+    /**
+     * Executes a move on the game board from (x1, y1) to (x2,y2).
+     * NOTE: does not check the legality of the move first (to avoid double-running checkMoveLegality() when using the pegGameSolver class), so you should always
+     *      check move legality before using this method on a move
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     */
+    public void executeMove(int x1, int y1, int x2, int y2){
+        gameBoard[x1][y1] = 0;
+        gameBoard[x2][y2] = 1;
+
+        int midX = (x2-x1)/2 + x1;
+        int midY = (y2-y1)/2 + y1;
+
+        gameBoard[midX][midY] = 0;
+    }
+
+    /**
+     * Executes a move on the game board based on that moves starting and ending coordinates
+     * NOTE: does not check the legality of the move first (to avoid double-running checkMoveLegality() when using the pegGameSolver class), so you should always
+     *      check move legality before using this method on a move
+     * @param move
+     */
+    public void executeMove(Move move){
+        executeMove(move.getStartX(), move.getStartY(), move.getEndX(), move.getEndY());
+    }
+
     public static void main(String[] args) {
-        PegGame pegGame = new PegGame(-1);
+
+        //Visual text for execute move
+        PegGame pegGame = new PegGame();
+        pegGame.printBoard();
+        pegGame.executeMove(0,2,2,2);
+        pegGame.printBoard();
+        pegGame.executeMove(1,0,1,2);
+        pegGame.printBoard();
+        pegGame.executeMove(1,4,1,1);
+        pegGame.printBoard();
+        pegGame.executeMove(3,4,1,4);
         pegGame.printBoard();
     }
 
