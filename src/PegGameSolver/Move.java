@@ -1,5 +1,10 @@
 package PegGameSolver;
 
+/**
+ * Wrapper class for game moves. Holds four coordinates: x and y for the start and end point of the move, respectively
+ * NOTE: a move object may contain an invalid move. Use pegGame.checkMoveLegality() to check whether or not this object
+ *      reprexents a move that can currently be taken.
+ */
 public class Move {
     private int x1, x2, y1, y2;
 
