@@ -32,10 +32,4 @@ public class pegGameTester {
         assertTrue(pegGame.checkMoveLegality(2,4,2,2)); 
     }
 
-    @Test
-    public void executeMoveVisualTest(){
-        pegGame.printBoard();
-        pegGame.executeMove(0,2,2,2);
-        pegGame.printBoard();
-    }
 }

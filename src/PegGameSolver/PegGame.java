@@ -12,10 +12,10 @@ public class PegGame {
     1 1 1 1 1
     1 1 1 1 1
     */
-
     private int[][] gameBoard;
     private int boardSize;
 
+    public Move lastMove; //TODO: private eventually
 
 
     /**
@@ -81,7 +81,7 @@ public class PegGame {
      * Checks if a given pair of cooridnates constitutes a valid move on the current game board
      * @return
      */
-    public boolean checkMoveLegality(int x1, int y1, int x2, int y2){
+    public boolean checkMoveLegality(int x1, int y1, int x2, int y2){ //TODO: this should be private eventually
 
         //checks that the inputs are all in bounds
         if ((x1 >= gameBoard.length || x1 < 0) || (y1 >= gameBoard.length || y1 < 0) || (x2 >= gameBoard.length || x2 < 0) || (y2 >= gameBoard.length || y2 < 0)){
@@ -137,14 +137,20 @@ public class PegGame {
      * @param x2
      * @param y2
      */
-    public void executeMove(int x1, int y1, int x2, int y2){
+    private void executeMove(int x1, int y1, int x2, int y2){
         gameBoard[x1][y1] = 0;
         gameBoard[x2][y2] = 1;
 
         int midX = (x2-x1)/2 + x1;
         int midY = (y2-y1)/2 + y1;
 
-        gameBoard[midX][midY] = 0;
+        if (gameBoard[midX][midY] == 1){
+            gameBoard[midX][midY] = 0;
+        } else{
+            gameBoard[midX][midY] = 1;
+        }
+
+        lastMove = new Move(x1, y1, x2, y2);
     }
 
     /**
@@ -157,19 +163,33 @@ public class PegGame {
         executeMove(move.getStartX(), move.getStartY(), move.getEndX(), move.getEndY());
     }
 
+    /**
+     * Undoes the very last move made on the board.
+     * NOTE: calling this twice will effectively redo (undo the undo)
+     */
+    public void undoLastMove(){
+        executeMove(lastMove.getEndX(), lastMove.getEndY(), lastMove.getStartX(), lastMove.getStartY());
+    }
+
     public static void main(String[] args) {
 
-        //Visual text for execute move
+        //Visual text for execute and undo move
         PegGame pegGame = new PegGame();
         pegGame.printBoard();
         pegGame.executeMove(0,2,2,2);
         pegGame.printBoard();
         pegGame.executeMove(1,0,1,2);
         pegGame.printBoard();
-        pegGame.executeMove(1,4,1,1);
+        pegGame.executeMove(1,3,1,1);
         pegGame.printBoard();
-        pegGame.executeMove(3,4,1,4);
+        pegGame.executeMove(3,3,1,3);
         pegGame.printBoard();
+        System.out.println("last move was: " + pegGame.lastMove.toString());
+        pegGame.undoLastMove();
+        pegGame.printBoard();
+        pegGame.undoLastMove();
+        pegGame.printBoard();
+
     }
 
 }
