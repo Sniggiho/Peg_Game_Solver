@@ -56,7 +56,7 @@ public class PegGame {
         for (int i = 0; i < boardSize; i ++){
             for (int j = 0; j < boardSize; j ++){
                 if (!(i == (boardSize/2) && j == (boardSize/2))){
-                    gameBoard[i][j] = 1;
+                    gameBoard[j][i] = 1;
                 }
             }
         }
@@ -216,10 +216,10 @@ public class PegGame {
     public List<Move> getAllLegalMoves(){
         List<Move> possibleMoves = new ArrayList<Move>();
 
-        for (int j = 0; j < boardSize; j ++){
-            for (int i = 0; i < boardSize; i ++){
-                if (getLegalMoves(i,j) != null){
-                    for (Move move : getLegalMoves(i, j)){
+        for (int i = 0; i < boardSize; i ++){
+            for (int j = 0; j < boardSize; j ++){
+                if (getLegalMoves(j,i) != null){
+                    for (Move move : getLegalMoves(j, i)){
                         possibleMoves.add(move);
                     }
                 }
@@ -239,30 +239,11 @@ public class PegGame {
 
     //TODO: fix this
     public static void main(String[] args) {
-        PegGame pegGame = new PegGame();
+        PegGame pegGame = new PegGame(4);
         pegGame.printBoard();
         System.out.println("num of pegs is " + pegGame.getNumPegs());
 
-
-        //Visual text for execute and undo move
-        pegGame.executeMove(0,2,2,2);
-        pegGame.printBoard();
-        System.out.println("num of pegs is " + pegGame.getNumPegs());
-
-        pegGame.executeMove(1,0,1,2);
-        pegGame.printBoard();
-        System.out.println("num of pegs is " + pegGame.getNumPegs());
-
-        pegGame.executeMove(1,3,1,1);
-        pegGame.printBoard();
-        System.out.println("num of pegs is " + pegGame.getNumPegs());
-
-        pegGame.executeMove(3,3,1,3);
-        pegGame.printBoard();
-        System.out.println("last move was: " + pegGame.lastMove.toString());
-        System.out.println("num of pegs is " + pegGame.getNumPegs());
-
-        pegGame.undoLastMove();
+        pegGame.executeMove(2,0,2,2);
         pegGame.printBoard();
         System.out.println("num of pegs is " + pegGame.getNumPegs());
 
@@ -270,9 +251,6 @@ public class PegGame {
         pegGame.printBoard();
         System.out.println("num of pegs is " + pegGame.getNumPegs());
 
-
-        //Testing getAllLegalMoves
-        System.out.println(pegGame.getAllLegalMoves());
 
     }
 
