@@ -19,9 +19,6 @@ public class PegGame {
 
     private int numPegs;
 
-    public Move lastMove; //TODO: private eventually
-
-
     /**
      * Initializes the game at the default board size
      */
@@ -52,7 +49,7 @@ public class PegGame {
      */
     public PegGame(int boardSize, int holeX, int holeY){
         this(boardSize);
-        if (holeX*holeY <= 0  || holeX > boardSize -1 || holeY>boardSize-1){
+        if (holeX*holeY < 0  || holeX > boardSize -1 || holeY>boardSize-1){
             throw new IllegalArgumentException("invalid hole location");
         }
         gameBoard[boardSize/2][boardSize/2] = 1;
@@ -157,22 +154,19 @@ public class PegGame {
      * @param x2
      * @param y2
      */
-    private void executeMove(int x1, int y1, int x2, int y2){
+    private void executeMove(int x1, int y1, int x2, int y2, boolean undo){
         gameBoard[x1][y1] = 0;
         gameBoard[x2][y2] = 1;
 
         int midX = (x2-x1)/2 + x1;
         int midY = (y2-y1)/2 + y1;
 
-        if (gameBoard[midX][midY] == 1){
+        if (!undo){
             gameBoard[midX][midY] = 0;
-            numPegs --;
         } else{
             gameBoard[midX][midY] = 1;
-            numPegs ++;
         }
 
-        lastMove = new Move(x1, y1, x2, y2);
     }
 
     /**
@@ -182,17 +176,20 @@ public class PegGame {
      * @param move
      */
     public void executeMove(Move move){
-        executeMove(move.getStartX(), move.getStartY(), move.getEndX(), move.getEndY());
+        executeMove(move.getStartX(), move.getStartY(), move.getEndX(), move.getEndY(), false);
         numPegs --;
     }
 
     /**
-     * Undoes the very last move made on the board.
-     * NOTE: calling this twice will effectively redo (undo the undo)
+     * Undoes the given move
+     * NOTE: in no way checks that the move has already been done, may produce illegal moves
+     * @param move the move to undo
      */
-    public void undoLastMove(){
-        executeMove(lastMove.getEndX(), lastMove.getEndY(), lastMove.getStartX(), lastMove.getStartY());
+    public void undoMove(Move move){
+        executeMove(move.getEndX(), move.getEndY(), move.getStartX(), move.getStartY(), true);
+        numPegs ++;    
     }
+
 
     /**
      * Returns a list of all legal moves from the given (x,y) location, and null if there are none
@@ -254,15 +251,17 @@ public class PegGame {
 
     //TODO: fix this
     public static void main(String[] args) {
-        PegGame pegGame = new PegGame(3, 4, 2);
+        PegGame pegGame = new PegGame(3, 2, 2);
+        pegGame.printBoard();
+        System.out.println("num of pegs is " + pegGame.getNumPegs());
+        
+        Move testMove = new Move(2, 0, 2, 2);
+
+        pegGame.executeMove(testMove);
         pegGame.printBoard();
         System.out.println("num of pegs is " + pegGame.getNumPegs());
 
-        pegGame.executeMove(2,0,2,2);
-        pegGame.printBoard();
-        System.out.println("num of pegs is " + pegGame.getNumPegs());
-
-        pegGame.undoLastMove();
+        pegGame.undoMove(testMove);
         pegGame.printBoard();
         System.out.println("num of pegs is " + pegGame.getNumPegs());
 

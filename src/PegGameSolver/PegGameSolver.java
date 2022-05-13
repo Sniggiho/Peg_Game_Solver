@@ -20,36 +20,24 @@ public class PegGameSolver {
     /**
      * TODO: finish
      * @param size the size of the peg game board to solve for
+     * @param holeX
+     * @param holeY
      */
-    public void solve(int size){
-        this.pegGame = new PegGame(size);
-
+    public void solve(int size, int holeX, int holeY){
+        this.pegGame = new PegGame(size, holeX, holeY);
         pegGame.printBoard();
-
 
         for (Move move : pegGame.getAllLegalMoves()) {
             solve(move);
         }
 
-        pegGame.printBoard();
-
         //After the algorithm has finished (and board returned to initial state)
-        System.out.println(numSoln + " solutions were found. The solutions are:");
+        System.out.println(numSoln + " solutions were found. An example solution is:");
         if (numSoln == 0) {
             System.out.println("NO SOLUTIONS");
+        } else{
+            System.out.println(solutions.get(0));
         }
-        for (Deque<Move> solution : solutions){
-            System.out.println(solution);
-
-            //TODO: temp visual aid---------
-            // for (Move step : solution){
-            //     pegGame.printBoard();
-            //     pegGame.executeMove(step);
-            // }
-            //------------------------------
-        }
-
-
     }
 
     /**
@@ -57,8 +45,7 @@ public class PegGameSolver {
      */
     private void solve(Move move){
         pegGame.executeMove(move);
-        currentPath.push(move);
-        System.out.println("Trying move: " + move.toString());
+        currentPath.addLast(move);
 
         if (pegGame.getNumPegs() == 1){
             Deque<Move> solution = new ArrayDeque<>();
@@ -75,13 +62,13 @@ public class PegGameSolver {
             }
         }
 
-        pegGame.undoLastMove();
-        currentPath.pop();
+        pegGame.undoMove(move);
+        currentPath.removeLast();
         
     }
 
     public static void main(String[] args) {
         PegGameSolver solver = new PegGameSolver();
-        solver.solve(3);
+        solver.solve(4,2,0);
     }
 }
