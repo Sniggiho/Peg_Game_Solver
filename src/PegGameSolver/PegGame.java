@@ -32,7 +32,7 @@ public class PegGame {
     }
 
     /**
-     * Initializes the game at a given board size
+     * Initializes the game at a given board size, with an empty space in the center
      * @param boardSize
      */
     public PegGame(int boardSize){
@@ -42,6 +42,21 @@ public class PegGame {
         this.boardSize = boardSize;
         this.gameBoard = new int[boardSize][boardSize];
         initializeGameBoard();
+    }
+
+    /**
+     * Initializes the game at a given board size, with an empty space at the location specified
+     * @param boardSize
+     * @param holeX
+     * @param holeY
+     */
+    public PegGame(int boardSize, int holeX, int holeY){
+        this(boardSize);
+        if (holeX*holeY <= 0  || holeX > boardSize -1 || holeY>boardSize-1){
+            throw new IllegalArgumentException("invalid hole location");
+        }
+        gameBoard[boardSize/2][boardSize/2] = 1;
+        gameBoard[holeX][holeY] = 0;
     }
 
     /**
@@ -239,7 +254,7 @@ public class PegGame {
 
     //TODO: fix this
     public static void main(String[] args) {
-        PegGame pegGame = new PegGame(4);
+        PegGame pegGame = new PegGame(3, 4, 2);
         pegGame.printBoard();
         System.out.println("num of pegs is " + pegGame.getNumPegs());
 
