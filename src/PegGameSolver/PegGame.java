@@ -1,5 +1,7 @@
 package PegGameSolver;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class PegGame {
     public static final int DEFAULT_BOARD_SIZE = 5;
@@ -14,6 +16,8 @@ public class PegGame {
     */
     private int[][] gameBoard;
     private int boardSize;
+
+    private int numPegs;
 
     public Move lastMove; //TODO: private eventually
 
@@ -56,6 +60,7 @@ public class PegGame {
                 }
             }
         }
+        numPegs = boardSize*boardSize-1;
     }
 
 
@@ -81,30 +86,30 @@ public class PegGame {
      * Checks if a given pair of cooridnates constitutes a valid move on the current game board
      * @return
      */
-    public boolean checkMoveLegality(int x1, int y1, int x2, int y2){ //TODO: this should be private eventually
+    public boolean checkMoveLegality(int x1, int y1, int x2, int y2){ //TODO: this should be private eventually; TODO: remove print statements
 
         //checks that the inputs are all in bounds
         if ((x1 >= gameBoard.length || x1 < 0) || (y1 >= gameBoard.length || y1 < 0) || (x2 >= gameBoard.length || x2 < 0) || (y2 >= gameBoard.length || y2 < 0)){
-            System.out.println("Move failed: index out of bounds");
+            // System.out.println("Move failed: index out of bounds");
             return false;
         }
 
         //checks that there is a peg in the starting spot, and that the ending spot is empty
         if (gameBoard[x1][y1] != 1 || gameBoard[x2][y2] !=0){
-            System.out.println("Move failed: starting and ending hole contents");
+            // System.out.println("Move failed: starting and ending hole contents");
             return false;
         }
 
         //checks that start and end points are one space apart
         if ((y1-y2 == 0 && Math.abs(x1-x2) != 2) || (x1-x2 == 0 && Math.abs(y1-y2) != 2)){
-            System.out.println("Move failed: move length incorrect");
+            // System.out.println("Move failed: move length incorrect");
 
             return false;
         }
 
         //checks that start and end aren't diagonal
         if (Math.abs(x1-x2) + Math.abs(y1-y2) > 2){
-            System.out.println("Move failed: end points diagonal");
+            // System.out.println("Move failed: end points diagonal");
             return false;
         }
 
@@ -112,7 +117,7 @@ public class PegGame {
         int midX = (x2-x1)/2 + x1;
         int midY = (y2-y1)/2 + y1;
         if (gameBoard[midX][midY] != 1){
-            System.out.println("Move failed: no peg to jump");
+            // System.out.println("Move failed: no peg to jump");
             return false;
         }
 
@@ -146,8 +151,10 @@ public class PegGame {
 
         if (gameBoard[midX][midY] == 1){
             gameBoard[midX][midY] = 0;
+            numPegs --;
         } else{
             gameBoard[midX][midY] = 1;
+            numPegs ++;
         }
 
         lastMove = new Move(x1, y1, x2, y2);
@@ -161,6 +168,7 @@ public class PegGame {
      */
     public void executeMove(Move move){
         executeMove(move.getStartX(), move.getStartY(), move.getEndX(), move.getEndY());
+        numPegs --;
     }
 
     /**
@@ -171,24 +179,100 @@ public class PegGame {
         executeMove(lastMove.getEndX(), lastMove.getEndY(), lastMove.getStartX(), lastMove.getStartY());
     }
 
-    public static void main(String[] args) {
+    /**
+     * Returns a list of all legal moves from the given (x,y) location, and null if there are none
+     * @param x
+     * @param y
+     * @return a list of all possible moves from the given x and y
+     */
+    private List<Move> getLegalMoves(int x, int y){
+        List<Move> possibleMoves = new ArrayList<Move>();
 
-        //Visual text for execute and undo move
+        if (checkMoveLegality(x,y,x+2,y)) {
+            possibleMoves.add(new Move(x,y,x+2,y));
+        }
+        if (checkMoveLegality(x,y,x,y+2)) {
+            possibleMoves.add(new Move(x,y,x,y+2));
+        }
+        if (checkMoveLegality(x,y,x-2,y)) {
+            possibleMoves.add(new Move(x,y,x-2,y));
+        }
+        if (checkMoveLegality(x,y,x,y-2)) {
+            possibleMoves.add(new Move(x,y,x,y-2));
+        }
+
+        if (possibleMoves.isEmpty()){
+            return null;
+        } else{
+            return possibleMoves;
+        }
+    }
+
+
+    /**
+     * TODO: finish
+     * @return a list of all possible moves on the current board
+     */
+    public List<Move> getAllLegalMoves(){
+        List<Move> possibleMoves = new ArrayList<Move>();
+
+        for (int j = 0; j < boardSize; j ++){
+            for (int i = 0; i < boardSize; i ++){
+                if (getLegalMoves(i,j) != null){
+                    for (Move move : getLegalMoves(i, j)){
+                        possibleMoves.add(move);
+                    }
+                }
+            }
+        }
+
+        return possibleMoves;
+    }
+
+    /**
+     * Getter method for the number of pegs left on the board
+     * @return
+     */
+    public int getNumPegs(){
+        return numPegs;
+    }
+
+    //TODO: fix this
+    public static void main(String[] args) {
         PegGame pegGame = new PegGame();
         pegGame.printBoard();
+        System.out.println("num of pegs is " + pegGame.getNumPegs());
+
+
+        //Visual text for execute and undo move
         pegGame.executeMove(0,2,2,2);
         pegGame.printBoard();
+        System.out.println("num of pegs is " + pegGame.getNumPegs());
+
         pegGame.executeMove(1,0,1,2);
         pegGame.printBoard();
+        System.out.println("num of pegs is " + pegGame.getNumPegs());
+
         pegGame.executeMove(1,3,1,1);
         pegGame.printBoard();
+        System.out.println("num of pegs is " + pegGame.getNumPegs());
+
         pegGame.executeMove(3,3,1,3);
         pegGame.printBoard();
         System.out.println("last move was: " + pegGame.lastMove.toString());
+        System.out.println("num of pegs is " + pegGame.getNumPegs());
+
         pegGame.undoLastMove();
         pegGame.printBoard();
+        System.out.println("num of pegs is " + pegGame.getNumPegs());
+
         pegGame.undoLastMove();
         pegGame.printBoard();
+        System.out.println("num of pegs is " + pegGame.getNumPegs());
+
+
+        //Testing getAllLegalMoves
+        System.out.println(pegGame.getAllLegalMoves());
 
     }
 
