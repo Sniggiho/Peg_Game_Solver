@@ -68,7 +68,7 @@ public class PegGame {
         for (int i = 0; i < boardSize; i ++){
             for (int j = 0; j < boardSize; j ++){
                 if (!(i == (boardSize/2) && j == (boardSize/2))){
-                    gameBoard[j][i] = 1;
+                    gameBoard[i][j] = 1;
                 }
             }
         }
@@ -230,8 +230,8 @@ public class PegGame {
 
         for (int i = 0; i < boardSize; i ++){
             for (int j = 0; j < boardSize; j ++){
-                if (getLegalMoves(j,i) != null){
-                    for (Move move : getLegalMoves(j, i)){
+                if (getLegalMoves(i,j) != null){
+                    for (Move move : getLegalMoves(i, j)){
                         possibleMoves.add(move);
                     }
                 }

@@ -69,6 +69,6 @@ public class PegGameSolver {
 
     public static void main(String[] args) {
         PegGameSolver solver = new PegGameSolver();
-        solver.solve(4,2,0);
+        solver.solve(5,2,2);
     }
 }
