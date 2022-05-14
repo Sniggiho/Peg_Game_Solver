@@ -14,10 +14,10 @@ public class PegGame {
     1 1 1 1 1
     1 1 1 1 1
     */
-    private int[][] gameBoard;
-    private int boardSize;
+    protected int[][] gameBoard;
+    protected int boardSize;
 
-    private int numPegs;
+    protected int numPegs;
 
     /**
      * Initializes the game at the default board size
@@ -102,26 +102,21 @@ public class PegGame {
 
         //checks that the inputs are all in bounds
         if ((x1 >= gameBoard.length || x1 < 0) || (y1 >= gameBoard.length || y1 < 0) || (x2 >= gameBoard.length || x2 < 0) || (y2 >= gameBoard.length || y2 < 0)){
-            // System.out.println("Move failed: index out of bounds");
             return false;
         }
 
         //checks that there is a peg in the starting spot, and that the ending spot is empty
         if (gameBoard[x1][y1] != 1 || gameBoard[x2][y2] !=0){
-            // System.out.println("Move failed: starting and ending hole contents");
             return false;
         }
 
         //checks that start and end points are one space apart
         if ((y1-y2 == 0 && Math.abs(x1-x2) != 2) || (x1-x2 == 0 && Math.abs(y1-y2) != 2)){
-            // System.out.println("Move failed: move length incorrect");
-
             return false;
         }
 
         //checks that start and end aren't diagonal
         if (Math.abs(x1-x2) + Math.abs(y1-y2) > 2){
-            // System.out.println("Move failed: end points diagonal");
             return false;
         }
 
@@ -129,7 +124,6 @@ public class PegGame {
         int midX = (x2-x1)/2 + x1;
         int midY = (y2-y1)/2 + y1;
         if (gameBoard[midX][midY] != 1){
-            // System.out.println("Move failed: no peg to jump");
             return false;
         }
 

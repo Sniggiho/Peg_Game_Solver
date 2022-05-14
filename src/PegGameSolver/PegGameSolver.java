@@ -23,8 +23,8 @@ public class PegGameSolver {
      * @param holeX
      * @param holeY
      */
-    public void solve(int size, int holeX, int holeY){
-        this.pegGame = new PegGame(size, holeX, holeY);
+    public void solve(PegGame game){
+        this.pegGame = game;
         pegGame.printBoard();
 
         for (Move move : pegGame.getAllLegalMoves()) {
@@ -69,6 +69,10 @@ public class PegGameSolver {
 
     public static void main(String[] args) {
         PegGameSolver solver = new PegGameSolver();
-        solver.solve(5,2,2);
+
+        PegGame sq = new PegGame(4);
+
+        PegGame tri = new PegGameTriangle(6);
+        solver.solve(tri);
     }
 }
